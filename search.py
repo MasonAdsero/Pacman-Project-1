@@ -88,29 +88,22 @@ def depthFirstSearch(problem):
     """
     "*** YOUR CODE HERE ***"
     stack = util.Stack()
-    path = dict()
     actions = list()
-    top = (problem.getStartState(), 0, 0) #variable holding current child
-    path[top[0]] = top
-    if(problem.isGoalState(problem.getStartState())):
-        return []
-
-    while not problem.isGoalState(top[0]):
-        potActions = problem.getSuccessors(top[0])
-        for action in potActions:
-            if action[0] not in path:
-                stack.push(action)
-                path[action[0]] = top #save path whilst marking visited
+    visited = list()
+    stack.push((problem.getStartState(), 0, 0))
+    #variable holding current child
+    while not stack.isEmpty():
         top = stack.pop()
+        if problem.isGoalState(top[0]):
+            return actions
+        for action in problem.getSuccessors(top[0]):
+            if action not in visited:
+                print(action)
+                stack.push(action)
+                visited.append(action)
 
-    #append first action
-    actions.append(top[1])
-    top = path[top[0]]
-    while top[0] != problem.getStartState():
-        actions.append(top[1])
-        top = path[top[0]]
-    actions.reverse()
-    return actions
+
+
 
 
 
@@ -149,15 +142,18 @@ def uniformCostSearch(problem):
     actions = list()
     cost = dict()
     first = (problem.getStartState(), 0, 0)
-    cost[first] = 0
+    cost[first[0]] = 0
     visited[first[0]] = first
     while not problem.isGoalState(first[0]):
         potActions = problem.getSuccessors(first[0])
         for action in potActions:
             if action[0] not in visited:
-                cost[action] = action[2] + cost[first]
-                print(cost[action])
-                que.update(action, cost[action])
+                cost[action[0]] = action[2] + cost[first[0]]
+                que.update(action, cost[action[0]])
+                visited[action[0]] = first
+            elif cost[action[0]] > action[2] + cost[first[0]]:
+                cost[action[0]] = action[2] + cost[first[0]]
+                que.update(action, cost[action[0]])
                 visited[action[0]] = first
         first = que.pop()
 
