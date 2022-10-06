@@ -86,25 +86,24 @@ def depthFirstSearch(problem):
     print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
+    #track state itself
     "*** YOUR CODE HERE ***"
     stack = util.Stack()
     actions = list()
     visited = list()
-    stack.push((problem.getStartState(), 0, 0))
-    #variable holding current child
+    stack.push((problem.getStartState(), 0, 0, 0))
     while not stack.isEmpty():
         top = stack.pop()
+        visited.append(top[0])
         if problem.isGoalState(top[0]):
+            while top != 0:
+                actions.append(top[1])
+                top = top[3]
             return actions
         for action in problem.getSuccessors(top[0]):
-            if action not in visited:
+            if action[0] not in visited:
                 print(action)
-                stack.push(action)
-                visited.append(action)
-
-
-
-
+                stack.push((action[0], action[1], action[2], top))
 
 
 
